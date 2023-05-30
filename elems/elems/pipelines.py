@@ -1,4 +1,25 @@
-import sqlite3
+import sqlite3, json, copy
+
+class GroupElementsPipeline:
+    def __init__(self):
+        self.elems = dict()
+
+    def process_item(self, item, spider):
+        cg = item['chemical_group']
+
+        if cg not in self.elems:
+            self.elems[cg] = dict(elements_count=0, elements=list())
+
+        item_copy = copy.deepcopy(item)
+        del item_copy['chemical_group']
+        self.elems[cg]['elements'].append(dict(item))
+        self.elems[cg]['elements_count'] += 1
+        return item
+
+    def close_spider(self, spider):
+        with open('grouped_elements.json', 'w') as f:
+            json.dump(self.elems, f)
+
 
 class ElemsPipeline:
     def __init__(self):
