@@ -1,15 +1,20 @@
 import scrapy
 from elems.items import PeriodicElementItem
 from scrapy.loader import ItemLoader
+from scrapy_playwright.page import PageMethod
 
 
 class PeriodicElSpider(scrapy.Spider):
     name = "periodic_el"
 
     def start_requests(self):
-        yield scrapy.Request("https://pubchem.ncbi.nlm.nih.gov/ptable", meta=dict(
-            playwright=True
-        ))
+        yield scrapy.Request("https://pubchem.ncbi.nlm.nih.gov/ptable",
+                             meta=dict(
+                                 playwright=True,
+                                 playwright_page_method=[
+                                     PageMethod('wait_for_selector', 'div.ptable')
+                                 ]
+                             ))
 
     def parse(self, response):
         for element in response.css("div.ptable div.element"):

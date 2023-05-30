@@ -5,9 +5,10 @@ from w3lib.html import remove_tags
 
 class PeriodicElementItem(scrapy.Item):
 
-    Symbol = scrapy.Field(
+    symbol = scrapy.Field(
         input_processor=MapCompose(remove_tags, str.strip),
         output_processor=TakeFirst
+
     )
     name = scrapy.Field(
         input_processor=MapCompose(remove_tags, str.strip),
